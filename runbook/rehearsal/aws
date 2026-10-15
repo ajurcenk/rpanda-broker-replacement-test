@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# rehearsal/aws - stand-in for the aws CLI during Docker rehearsals (mounted by bastion.sh).
+# Route 53 calls read and edit the harness CoreDNS zone file (/coredns/rp.test.hosts) instead;
+# CoreDNS reloads it every 2 s, so a "Route 53 change" really changes what dig returns.
+H=/coredns/rp.test.hosts
+arg() { local want="$1"; shift; while [[ $# -gt 0 ]]; do [[ "$1" == "$want" ]] && { echo "$2"; return; }; shift; done; }
+case "$1 $2" in
+  "route53 list-resource-record-sets")
+    n="$(arg --start-record-name "$@")"; n="${n%.}"
+    ip="$(awk -v n="$n" '$2==n {print $1}' "$H")"
+    if [[ "$(arg --output "$@")" == text ]]; then echo "${ip:-None}"
+    else printf '{"type":"A","ttl":5,"values":["%s"]}\n' "$ip"; fi ;;
+  "route53 change-resource-record-sets")
+    f="$(arg --change-batch "$@")"; f="${f#file://}"
+    n="$(jq -r '.Changes[0].ResourceRecordSet.Name' "$f")"; n="${n%.}"
+    v="$(jq -r '.Changes[0].ResourceRecordSet.ResourceRecords[0].Value' "$f")"
+    if grep -qE "^[0-9.]+ $n  # alias" "$H"; then
+      inst="$(awk -v ip="$v" '$1==ip && /# instance/ {sub(/\.rp\.test$/, "", $2); print $2}' "$H")"
+      awk -v n="$n" -v ip="$v" -v i="$inst" '$2==n {print ip " " n "  # alias -> " i; next} {print}' "$H" > "$H.tmp"
+    elif grep -qE "^[0-9.]+ $n " "$H"; then
+      awk -v n="$n" -v ip="$v" '$2==n {print ip " " n "  # instance"; next} {print}' "$H" > "$H.tmp"
+    else
+      { cat "$H"; echo "$v $n  # instance"; } > "$H.tmp"
+    fi
+    chmod 644 "$H.tmp" && mv "$H.tmp" "$H"
+    echo "/change/CTEST$(date +%s)" ;;
+  "route53 wait") sleep 3 ;;
+  *) echo "aws stub: unsupported: $*" >&2; exit 1 ;;
+esac

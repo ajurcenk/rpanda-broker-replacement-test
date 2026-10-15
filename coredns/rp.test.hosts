@@ -1,0 +1,25 @@
+# rp.test zone. Managed by scripts/dns-repoint.sh. Format: IP NAME  # role
+172.30.0.10 minio.rp.test
+172.30.0.11 io-b1.rp.test  # instance
+172.30.0.12 io-b2.rp.test  # instance
+172.30.0.13 io-b3.rp.test  # instance
+172.30.0.14 io-b4.rp.test  # instance
+172.30.0.15 io-b5.rp.test  # instance
+172.30.0.21 nv-n1.rp.test  # instance
+172.30.0.22 nv-n2.rp.test  # instance
+172.30.0.23 nv-n3.rp.test  # instance
+172.30.0.24 nv-n4.rp.test  # instance
+172.30.0.25 nv-n5.rp.test  # instance
+172.30.0.61 sp-1.rp.test  # instance
+172.30.0.62 sp-2.rp.test  # instance
+172.30.0.63 sp-3.rp.test  # instance
+172.30.0.64 sp-4.rp.test  # instance
+172.30.0.31 tmp-1.rp.test  # instance
+172.30.0.11 b1.rp.test  # alias -> io-b1
+172.30.0.12 b2.rp.test  # alias -> io-b2
+172.30.0.13 b3.rp.test  # alias -> io-b3
+172.30.0.14 b4.rp.test  # alias -> io-b4
+172.30.0.15 b5.rp.test  # alias -> io-b5
+172.30.0.99 dead1.rp.test  # unreachable
+172.30.0.99 dead2.rp.test  # unreachable
+172.30.0.99 dead3.rp.test  # unreachable

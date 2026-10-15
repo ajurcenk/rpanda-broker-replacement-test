@@ -1,0 +1,13 @@
+# rp.test is served from a hosts file that dns-repoint.sh rewrites atomically (rename),
+# so the directory, not the file, is bind-mounted.
+rp.test:53 {
+    hosts /etc/coredns/rp.test.hosts {
+        ttl 5
+        reload 2s
+    }
+    errors
+}
+.:53 {
+    forward . 127.0.0.11
+    errors
+}

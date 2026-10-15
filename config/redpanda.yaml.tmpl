@@ -1,0 +1,29 @@
+# Rendered by scripts/render-config.sh for instance @INSTANCE@. Do not edit rendered copies.
+redpanda:
+  data_directory: /var/lib/redpanda/data
+  rack: "@RACK@"
+  empty_seed_starts_cluster: false
+  seed_servers:
+@SEEDS@
+  rpc_server:
+    address: 0.0.0.0
+    port: 33145
+  advertised_rpc_api:
+    address: @INSTANCE@.rp.test
+    port: 33145
+  kafka_api:
+    - address: 0.0.0.0
+      port: 9092
+  advertised_kafka_api:
+    - address: @INSTANCE@.rp.test
+      port: 9092
+  admin:
+    - address: 0.0.0.0
+      port: 9644
+rpk:
+  kafka_api:
+    brokers:
+      - localhost:9092
+  admin_api:
+    addresses:
+      - localhost:9644

@@ -1,0 +1,4 @@
+# Cluster properties applied at first cluster formation only.
+# The image's default config enables developer_mode, under which write_caching_default
+# is true; we want acks=all to mean fsynced from the very first byte, internal topics included.
+write_caching_default: "false"
